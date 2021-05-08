@@ -73,14 +73,16 @@ export const AddPropertyScreen = ({ navigation, route }) => {
         address: '',
         purchaseCost: '',
         rehabCost: '',
-        monthlyCost:'',
+        mortgageCost:'',
         maintCost: '',
         monthlyRent: '',
         reserveAmt: '',
         sqft: '',
         acres: '',
         bedrooms: '',
-        bathrooms: ''
+        bathrooms: '',
+        debtRemaining: '',
+        downPayment: ''
     })
     const { region } = route.params
     const { addProperty } = useContext(RealEstateContext)
@@ -163,9 +165,9 @@ export const AddPropertyScreen = ({ navigation, route }) => {
                         />
                         <StyledInput 
                             label='Monthly cost'
-                            value={propertyState.monthlyCost}
+                            value={propertyState.mortgageCost}
                             keyboardType='numeric'
-                            onChange={event => setPropertyState(prevState =>  ({...prevState, monthlyCost: event.nativeEvent.text}) )}
+                            onChange={event => setPropertyState(prevState =>  ({...prevState, mortgageCost: event.nativeEvent.text}) )}
                             underlineColor='green'
                         />
                         <StyledInput 
@@ -180,6 +182,13 @@ export const AddPropertyScreen = ({ navigation, route }) => {
                             value={propertyState.bedrooms}
                             keyboardType='numeric'
                             onChange={event => setPropertyState(prevState =>  ({...prevState, bedrooms: event.nativeEvent.text}) )}
+                            underlineColor='green'
+                        />
+                        <StyledInput 
+                            label='Debt Remaining'
+                            value={propertyState.debtRemaining}
+                            keyboardType='numeric'
+                            onChange={event => setPropertyState(prevState =>  ({...prevState, debtRemaining: event.nativeEvent.text}) )}
                             underlineColor='green'
                         />
                     </FirstColumn>
@@ -217,6 +226,13 @@ export const AddPropertyScreen = ({ navigation, route }) => {
                             value={propertyState.bathrooms}
                             keyboardType='numeric'
                             onChange={event => setPropertyState(prevState =>  ({...prevState, bathrooms: event.nativeEvent.text}) )}
+                            underlineColor='green'
+                        />
+                        <StyledInput 
+                            label='Down Payment'
+                            value={propertyState.downPayment}
+                            keyboardType='numeric'
+                            onChange={event => setPropertyState(prevState =>  ({...prevState, downPayment: event.nativeEvent.text}) )}
                             underlineColor='green'
                         />
                     </SecondColumn>

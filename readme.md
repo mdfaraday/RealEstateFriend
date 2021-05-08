@@ -13,10 +13,14 @@ Keep track of different properties owned/rental and repairs needed, expenses bei
 - npm install @react-navigation/bottom-tabs
 - expo install expo-image-picker
 - expo install expo-permissions
+- react-native-raw-bottom-sheet
+- expo-sqlite
+- expo-file-system
+- @ui-kitten/components
+- @eva-design/eva
 
-### Extras
+### Potential Extras
 
-- sending params in React Navigation
 - List.Accordian (react native paper)
 
 ### Current Issues

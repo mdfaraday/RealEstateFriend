@@ -1,18 +1,18 @@
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 import { View, Text, Button, ScrollView, SafeAreaView, Image, TouchableOpacity } from 'react-native'
 import styled from 'styled-components/native'
-import { Entypo, Ionicons } from '@expo/vector-icons'; 
-import { Card, Paragraph } from 'react-native-paper'
+import { Entypo, Ionicons } from '@expo/vector-icons'
+import { Card, Paragraph, Divider } from 'react-native-paper'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
+import RBSheet from "react-native-raw-bottom-sheet"
 
 import { RealEstateContext } from '../../../services/realestate/properties.context'
+import { theme } from '../../../infrastructure/theme'
+import { NavigationContext } from 'react-navigation'
 
 const ScreenWrapper = styled(SafeAreaView)`
     flex: 1
-`
-const Title = styled.Text`
-    font-size: ${props => props.theme.fontSizes.xLarge}
-    align-self: center
-    margin: 20px
 `
 const HeadingWrapper = styled.View`
     height: 50px
@@ -89,27 +89,33 @@ const DescriptionCard = styled.View`
 const DescriptionText = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
 `
-const DeleteButton = styled(TouchableOpacity)`
-    width: 95%
-    background-color: red
-    border-radius: 20px
-    margin: 10px
+
+const SheetListItem = styled.TouchableOpacity`
+    flex-direction: row
+    justify-content: center
+    align-items: center
+    margin-top: 20px
+    margin-bottom: 30px
 `
-const DeleteText = styled.Text`
+
+const SheetListItemTitle = styled.Text`
     font-size: ${props => props.theme.fontSizes.large}
-    color: white
-    padding: 15px
-    align-self: center
+    padding-left: 40px
 `
 
 //this screen accessed from 'PropertyItem.js'
 export const PropertyDetailScreen = ({ navigation, route }) => {
     const { propertyInfo, currentRegion } = route.params
     const { deleteProperty } = useContext(RealEstateContext)
+    const refRBSheet = useRef()
 
     const deletePropertyHandler = () => {
         deleteProperty(propertyInfo.regionName, propertyInfo.propertyName)
         navigation.navigate('Main')
+    }
+    const addWorkOrderHandler = () => {
+        refRBSheet.current.close()
+        navigation.navigate('AddWorkOrder')
     }
 
     return (
@@ -122,7 +128,7 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                     <Heading>{propertyInfo.propertyName}</Heading>
                     <HeadingSubtitle>{currentRegion}</HeadingSubtitle>
                 </HeadingTextWrapper>
-                <MenuButton>
+                <MenuButton onPress={() => refRBSheet.current.open()}>
                     <Ionicons name='menu' size={40} color='black' />
                 </MenuButton>
             </HeadingWrapper>
@@ -140,13 +146,15 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                     <InfoCard>
                         <FirstColumn>
                             <InfoText>Purchase cost: ${propertyInfo.purchaseCost}</InfoText>
+                            <InfoText>Down Payment: {propertyInfo.downPayment}</InfoText>
                             <InfoText>Rehab cost: ${propertyInfo.rehabCost}</InfoText>
-                            <InfoText>Monthly cost: ${propertyInfo.monthlyCost}</InfoText>
+                            <InfoText>Mortgage cost: ${propertyInfo.monthlyCost}</InfoText>
                             <InfoText>Maint cost: ${propertyInfo.maintCost}</InfoText>
                             <InfoText>Bedrooms: {propertyInfo.bedrooms}</InfoText>
                         </FirstColumn>
                         <SecondColumn>
                             <InfoText>Monthly rent: ${propertyInfo.monthlyRent}</InfoText>
+                            <InfoText>Debt Remaining: {propertyInfo.debtRemaining}</InfoText>
                             <InfoText>Reserve Amt: ${propertyInfo.reserveAmt}</InfoText>
                             <InfoText>Sqft: {propertyInfo.sqft}</InfoText>
                             <InfoText>Acres: {propertyInfo.acres}</InfoText>
@@ -157,9 +165,39 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                     <DescriptionCard>
                         <DescriptionText>{propertyInfo.description}</DescriptionText>
                     </DescriptionCard>
-                    <DeleteButton onPress={deletePropertyHandler} >
-                        <DeleteText>Delete Property</DeleteText>
-                    </DeleteButton>
+
+            <RBSheet
+                ref={refRBSheet}
+                height={200}
+                openDuration={200}
+                closeOnDragDown={true}
+                closeOnPressMask={true}
+                customStyles={{
+                    draggableIcon: {
+                      backgroundColor: theme.colors.ui.secondary
+                    },
+                    wrapper: {
+                        alignItems: 'center'
+                    },
+                    container: {
+                        borderTopRightRadius: 20,
+                        borderTopLeftRadius: 20,
+                        width: '90%'
+                    }
+                  }}
+            >
+                <SheetListItem onPress={addWorkOrderHandler}>
+                    <MaterialCommunityIcons name="hammer-wrench" size={36} color={theme.colors.ui.primary} />
+                    <SheetListItemTitle>Add Work Order</SheetListItemTitle>
+                </SheetListItem>
+                <Divider />
+                <SheetListItem onPress={deletePropertyHandler}>
+                    <AntDesign name="delete" size={36} color="red" />
+                    <SheetListItemTitle>Delete Property</SheetListItemTitle>
+                </SheetListItem>
+                <Divider />
+            </RBSheet>
+                    
                 </MainBody>
             </ScrollView>
         </ScreenWrapper>

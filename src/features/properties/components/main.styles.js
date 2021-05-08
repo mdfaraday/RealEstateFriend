@@ -15,6 +15,7 @@ export const NoPropertiesView = styled.SafeAreaView`
 export const NoPropertiesTextWrapper = styled.View`
     width: 80%
     align-items: center
+    margin-bottom: 20px
 `
 
 export const NoPropertiesText = styled.Text`
@@ -33,7 +34,7 @@ export const SheetListItem = styled.TouchableOpacity`
     flex-direction: row
     justify-content: center
     align-items: center
-    margin-top: 30px
+    margin-top: 20px
     margin-bottom: 30px
 `
 

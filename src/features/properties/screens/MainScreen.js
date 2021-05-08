@@ -13,6 +13,7 @@ import { RealEstateContext } from '../../../services/realestate/properties.conte
 import { RegionModal } from '../components/RegionModal'
 import { RegionCard } from '../components/RegionCard'
 import { DisplayPropertyList } from '../components/DisplayPropertyList'
+import { theme } from '../../../infrastructure/theme'
 
 export const MainScreen = ({ navigation }) => {
     const [modalIsVisible, setModalIsVisible] = useState(false)
@@ -20,7 +21,7 @@ export const MainScreen = ({ navigation }) => {
     //const [enteringNewRegion, setEnteringNewRegion] = useState(false)
     const [selectedRegion, setSelectedRegion] = useState(null)
     const refRBSheet = useRef() //it's possible to setup the bottom sheet in another screen and pass the 'ref' using the special syntax for it.
-    const { propertiesData, addRegion, loadProperties, deleteRegion, hardDataReset, tempDeleteSpecificRegions, addProperty } = useContext(RealEstateContext)
+    const { propertiesData, addRegion, loadProperties, deleteRegion, hardDataReset, tempDeleteSpecificRegions } = useContext(RealEstateContext)
 
     useEffect(() => {
         initialLoad()
@@ -81,14 +82,14 @@ export const MainScreen = ({ navigation }) => {
                     </ContainerForAllProperties>
                 ) : (
                 <NoPropertiesView>
-                    <FontAwesome name="home" size={200} color="purple" />
+                    <FontAwesome name="home" size={200} color={theme.colors.ui.secondary} />
                     <NoPropertiesTextWrapper>
         <Button title='delete' onPress={() => tempDeleteSpecificRegions('')} />
                         <NoPropertiesText>You don't have any properties yet.</NoPropertiesText>
                         <NoPropertiesText>Click the menu button to start adding</NoPropertiesText>
                         <NoPropertiesText>Make some money</NoPropertiesText>
-                        <MaterialIcons name="attach-money" size={80} color="green" />
                     </NoPropertiesTextWrapper>
+                    <MaterialIcons name="attach-money" size={80} color={theme.colors.ui.primary} />
                 </NoPropertiesView>
             )}
 
@@ -98,8 +99,8 @@ export const MainScreen = ({ navigation }) => {
             />
             <RBSheet
                 ref={refRBSheet}
-                height={260}
-                openDuration={250}
+                height={200}
+                openDuration={200}
                 closeOnDragDown={true}
                 closeOnPressMask={true}
                 customStyles={{
@@ -112,7 +113,7 @@ export const MainScreen = ({ navigation }) => {
                     container: {
                         borderTopRightRadius: 20,
                         borderTopLeftRadius: 20,
-                        width: '96%'
+                        width: '90%'
                     }
                   }}
             >

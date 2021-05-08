@@ -8,6 +8,7 @@ import { List, Button } from 'react-native-paper'
 // import RBSheet from "react-native-raw-bottom-sheet"
 
 import { AuthenticationContext } from '../../../services/authentication/authentication.context'
+import { theme } from '../../../infrastructure/theme'
 
 const SettingsItem = styled.View`
 
@@ -24,7 +25,7 @@ export const MenuScreen =() => {
 
     return (        
         <SettingsContainer>
-            <Button icon='door-open' color='green' mode='contained' onPress={onLogout}>
+            <Button icon='door-open' color={theme.colors.ui.primary} mode='contained' onPress={onLogout}>
                 Logout
             </Button>
         </SettingsContainer>

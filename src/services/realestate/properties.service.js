@@ -48,7 +48,8 @@ export const createRegionStep2 = (newRegionName) => {
     const promise = new Promise((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql(`CREATE TABLE IF NOT EXISTS ${newString} ( id INTEGER PRIMARY KEY, propertyName TEXT, imageUri TEXT, description TEXT, address TEXT, purchaseCost TEXT, 
-                rehabCost TEXT, monthlyCost TEXT, maintCost TEXT, monthlyRent TEXT, reserveAmt TEXT, sqft TEXT, acres TEXT, bedrooms TEXT, bathrooms TEXT);`,
+                rehabCost TEXT, mortgageCost TEXT, maintCost TEXT, monthlyRent TEXT, reserveAmt TEXT, sqft TEXT, acres TEXT, bedrooms TEXT, bathrooms TEXT, debtRemaining TEXT,
+                downPayment TEXT);`,
             [],
             () => {
                 resolve()
@@ -114,10 +115,11 @@ export const createProperty = (propertyState) => {
 
     const promise = new Promise((resolve, reject) => {
         db.transaction(tx => {
-            tx.executeSql(`INSERT INTO ${newRegionName} (propertyName, imageUri, description, address, purchaseCost, rehabCost, monthlyCost, maintCost, 
-                monthlyRent, reserveAmt, sqft, acres, bedrooms, bathrooms) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-            [newName, propertyState.imageUri, newDescription, newAddress, propertyState.purchaseCost, propertyState.rehabCost, propertyState.monthlyCost, propertyState.maintCost,
-                propertyState.monthlyRent, propertyState.reserveAmt, propertyState.sqft, propertyState.acres, propertyState.bedrooms, propertyState.bathrooms],
+            tx.executeSql(`INSERT INTO ${newRegionName} (propertyName, imageUri, description, address, purchaseCost, rehabCost, mortgageCost, maintCost, 
+                monthlyRent, reserveAmt, sqft, acres, bedrooms, bathrooms, debtRemaining, downPayment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+            [newName, propertyState.imageUri, newDescription, newAddress, propertyState.purchaseCost, propertyState.rehabCost, propertyState.mortgageCost, propertyState.maintCost,
+                propertyState.monthlyRent, propertyState.reserveAmt, propertyState.sqft, propertyState.acres, propertyState.bedrooms, propertyState.bathrooms,
+                propertyState.debtRemaining, propertyState.downPayment],
             (_, result) => {
                 console.log('createProperty success')
                 resolve(result)

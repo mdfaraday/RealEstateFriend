@@ -47,7 +47,7 @@ export const PropertyItem = ({ propertyInfo, navigation, currentRegion }) => {
             <PropertyCard  onPress={goToDetailScreen} >
                 <ImageContainer>
                     <CardBackgroundImage source={{ uri: propertyInfo.imageUri }} />
-                    <PropertyLabel>{propertyInfo.name}</PropertyLabel>
+                    <PropertyLabel>{propertyInfo.propertyName}</PropertyLabel>
                 </ImageContainer>
                 
             </PropertyCard>

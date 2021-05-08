@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { ThemeProvider } from 'styled-components/native';
 import * as firebase from 'firebase'
+import { ApplicationProvider } from '@ui-kitten/components'
+import * as eva from '@eva-design/eva'
 
 import { Navigation } from './src/infrastructure/navigation'
 import { theme } from './src/infrastructure/theme'
@@ -40,7 +42,9 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <AuthenticationContextProvider>
           <RealEstateContextProvider>
-            <Navigation />
+            <ApplicationProvider {...eva} theme={eva.light}>
+              <Navigation />
+            </ApplicationProvider>
           </RealEstateContextProvider>
         </AuthenticationContextProvider>
       </ThemeProvider>
