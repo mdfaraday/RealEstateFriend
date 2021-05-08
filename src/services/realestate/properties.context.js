@@ -1,4 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react'
+import { fetchAllData, createRegion, createRegionStep2, fetchTableByName, removeRegion, removeRegionStep2, 
+    resetAllData, removeSpecificRegionsWithThis, createProperty, removeProperty } from './properties.service'
+import Region from '../../models/region'
 
 export const RealEstateContext = createContext()
 
@@ -7,19 +10,122 @@ export const RealEstateContextProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(null)
 
-    const addRegion = (newName) => {
-        const newRegion = {
-            name: newName,
-            properties: []
+    //temp to help fix issues with saving/deleting from SQLite.
+    //can input exact name of region into the delete button parameters which are located on the main screen to remove regions.
+    const tempDeleteSpecificRegions = async (name) => {
+        await removeSpecificRegionsWithThis(name)
+    }
+
+    const addRegion = async (newRegionName) => {
+        try {
+            await createRegion(newRegionName)
+            await createRegionStep2(newRegionName)
+            await loadProperties()
+        } catch (e) {
+            console.log('addRegion error')
+            throw e
         }
-        setPropertiesData([...propertiesData, newRegion])
+    }
+
+    const deleteRegion = async (name) => {
+        try {
+            await removeRegion(name)
+        } catch (e) {
+            console.log('deleteRegion Error 1')
+            throw e
+        }
+        try {
+            await removeRegionStep2(name)
+        } catch (e) {
+            console.log('deleteRegion Error 2')
+            throw e
+        }
+        try {
+            await loadProperties()
+        } catch (e) {
+            console.log('deleteRegion error 3')
+            throw e
+        }
+    }
+
+    const addProperty = async (propertyState) => {
+        try {
+            await createProperty(propertyState)
+        } catch (e) {
+            console.log('addProperty error')
+            throw e
+        }
+        try {
+            await loadProperties()
+        } catch (e) {
+            console.log('addProperty error 2')
+            throw e
+        }
+    }
+
+    const deleteProperty = async (regionName, name) => {
+        try {
+            await removeProperty(regionName, name)
+        } catch (e) {
+            console.log('deleteProperty error 1')
+            throw e
+        }
+        try {
+            await loadProperties()
+        } catch (e) {
+            console.log('deleteProperty error 2')
+            throw e
+        }
+    }
+
+    const loadProperties = async () => {
+        try {
+            const dbResult = await fetchAllData()
+            //console.log(dbResult)
+            let newArray = []
+            if (dbResult.rows._array.length > 0) {
+                for (let i=0;i<dbResult.rows._array.length;i++) {
+                    const info = await fetchTableByName(dbResult.rows._array[i].regionName) //returns an array of the properties for [i] region.
+                    if (info.rows.length === 0) { //have to instead create a new region if no properties are under the region due to the way SQLite saves data (ie the array is left empty).
+                        const newName = dbResult.rows._array[i].regionName.replace(/_/g, ' ')
+                        newArray.push(new Region(newName, [])) //if no properties added yet.
+                    } else {
+                        //console.log('fetchingTableByName')
+                        //console.log(dbResult.rows._array[i].regionName)
+                        const newData = await fetchTableByName(dbResult.rows._array[i].regionName)
+                        console.log(newData)
+                        newArray.push({regionName: dbResult.rows._array[i].regionName, properties: newData.rows._array}) //if properties have been added.
+
+                    }
+                }
+            }
+            setPropertiesData(newArray)
+        } catch (e) {
+            throw e
+        }
+    }
+
+    //temp to help fix issues with saving/deleting from SQLite.
+    const hardDataReset = async () => {
+        try {
+            await resetAllData()
+        } catch (e) {
+            console.log('hardDataReset Error')
+            throw e
+        }
     }
 
     return (
         <RealEstateContext.Provider
             value={{
                 propertiesData,
-                addRegion
+                addRegion,
+                loadProperties,
+                deleteRegion,
+                addProperty,
+                deleteProperty,
+                hardDataReset,
+                tempDeleteSpecificRegions
             }}
         >
             {children}

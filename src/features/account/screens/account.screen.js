@@ -45,9 +45,3 @@ export const AccountScreen = () => {
         </LoginBackground>
     )
 }
-
-// const styles = StyleSheet.create({
-//     buttonStyle: {
-//         fontSize: 30
-//     }
-// })

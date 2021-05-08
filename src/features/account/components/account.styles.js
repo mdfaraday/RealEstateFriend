@@ -32,7 +32,7 @@ export const AuthButton = styled(Button).attrs({
 `//padding: ${(props) => props.theme.space[2]}
 
 export const Title = styled.Text`
-    font-size: ${(props) => props.theme.fontSizes.extraLarge}
+    font-size: ${(props) => props.theme.fontSizes.xLarge}
 `
 
 export const AuthInput = styled(TextInput)`

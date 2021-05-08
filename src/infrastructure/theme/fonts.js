@@ -3,5 +3,7 @@ export const fontSizes = {
     small: "14px",
     medium: "18px",
     large: "24px",
-    extraLarge: "48px",
+    xLarge: "32px",
+    xxLarge: "40px",
+    xxxLarge: "48px",
 }

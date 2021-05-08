@@ -7,3 +7,5 @@ export const sizes = [
     '48px',
     '64px'
 ]
+
+export const borderRadiusSize = 20

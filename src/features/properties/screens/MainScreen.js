@@ -1,41 +1,89 @@
-import React, { useRef, useState, useContext } from 'react'
-import { View, Text, Modal } from 'react-native'
-import { List, Divider } from 'react-native-paper'
+import React, { useRef, useState, useContext, useEffect } from 'react'
+import { View, Text, FlatList, Button } from 'react-native'
+import { List, Divider, Modal, Portal, Provider } from 'react-native-paper'
 import { FontAwesome } from '@expo/vector-icons'; 
 import { MaterialIcons } from '@expo/vector-icons'; 
 import RBSheet from "react-native-raw-bottom-sheet"
 import { FontAwesome5 } from '@expo/vector-icons'
 import styled from 'styled-components/native'
 
-import { ScreenWrapper, NoPropertiesView, NoPropertiesTextWrapper, NoPropertiesText, ActionButton, SheetListItem, SheetListItemTitle } from '../components/main.styles'
-import { RealEstateContext } from '../../../services/realestate/properties.context';
+import { ScreenWrapper, NoPropertiesView, NoPropertiesTextWrapper, NoPropertiesText, ActionButton, SheetListItem, SheetListItemTitle, 
+        RegionListContainer, PropertyListContainer, ContainerForAllProperties } from '../components/main.styles'
+import { RealEstateContext } from '../../../services/realestate/properties.context'
 import { RegionModal } from '../components/RegionModal'
+import { RegionCard } from '../components/RegionCard'
+import { DisplayPropertyList } from '../components/DisplayPropertyList'
 
-export const MainScreen = () => {
+export const MainScreen = ({ navigation }) => {
     const [modalIsVisible, setModalIsVisible] = useState(false)
-    const [regions, setRegions] = useState([])
-    const refRBSheet = useRef()
-    const { propertiesData, addRegion } = useContext(RealEstateContext)
+    const [indexOfRegion, setIndexOfRegion] = useState(0)
+    //const [enteringNewRegion, setEnteringNewRegion] = useState(false)
+    const [selectedRegion, setSelectedRegion] = useState(null)
+    const refRBSheet = useRef() //it's possible to setup the bottom sheet in another screen and pass the 'ref' using the special syntax for it.
+    const { propertiesData, addRegion, loadProperties, deleteRegion, hardDataReset, tempDeleteSpecificRegions, addProperty } = useContext(RealEstateContext)
+
+    useEffect(() => {
+        initialLoad()
+        //hardDataReset()
+    }, [selectedRegion])
+    //console.log(propertiesData)
+    const initialLoad = async () => {
+        await loadProperties()
+    }
 
     const saveRegion = (name) => {
         addRegion(name)
         setModalIsVisible(false)
     }
-
+    const removeRegionByName = (name) => {
+        deleteRegion(name)
+    }
+    const dismissModal = () => {
+        setModalIsVisible(false)
+    }
     const loadRegionModal = () => {
         refRBSheet.current.close()
         setModalIsVisible(true)
     }
+    const loadAddPropertyScreen = () => {
+        refRBSheet.current.close()
+        //navigation.navigate('AddProperty')
+        navigation.navigate( 'AddProperty', { region: selectedRegion })
+    }
+    //from RegionCard under components
+    const regionSelectedHandler = (currentRegionSelected, index) => {
+        setIndexOfRegion(index)
+        setSelectedRegion(currentRegionSelected)
+    }
 
     return (
+        <Provider>
         <ScreenWrapper>
             {propertiesData.length > 0 
                 ? (
-                    <Text>Hello there</Text>
+                    <ContainerForAllProperties>
+                        <RegionListContainer>
+                            <FlatList 
+                                data={propertiesData} 
+                                horizontal
+                                keyExtractor={() => (Math.random() * 1).toString()} 
+                                renderItem={({ item }) => (
+                                    <RegionCard regionTitle={item.regionName} deleteRegionByName={removeRegionByName} regionSelected={regionSelectedHandler} fullDataList={propertiesData} />
+                                )}
+                            />
+                        </RegionListContainer>
+                        <PropertyListContainer>
+                            { selectedRegion 
+                                ? <DisplayPropertyList fullDataList={propertiesData[indexOfRegion].properties} navigation={navigation} currentRegion={selectedRegion} /> 
+                                : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text style={{ fontSize: 20}}>No properties yet</Text></View>
+                            }
+                        </PropertyListContainer>
+                    </ContainerForAllProperties>
                 ) : (
                 <NoPropertiesView>
                     <FontAwesome name="home" size={200} color="purple" />
                     <NoPropertiesTextWrapper>
+        <Button title='delete' onPress={() => tempDeleteSpecificRegions('')} />
                         <NoPropertiesText>You don't have any properties yet.</NoPropertiesText>
                         <NoPropertiesText>Click the menu button to start adding</NoPropertiesText>
                         <NoPropertiesText>Make some money</NoPropertiesText>
@@ -73,19 +121,16 @@ export const MainScreen = () => {
                     <SheetListItemTitle>Add New Region</SheetListItemTitle>
                 </SheetListItem>
                 <Divider />
-                <SheetListItem>
+                <SheetListItem onPress={loadAddPropertyScreen}>
                     <FontAwesome name="home" size={42} color="green" />
                     <SheetListItemTitle>Add New Property</SheetListItemTitle>
                 </SheetListItem>
                 <Divider />
             </RBSheet>
-
-            <Modal
-                transparent={true}
-                visible={modalIsVisible}
-            >
-                <RegionModal closeModal={saveRegion} />
-            </Modal>
+            
+            <RegionModal visible={modalIsVisible} dismiss={dismissModal} closeModal={saveRegion} />
+            
         </ScreenWrapper>
+        </Provider>
     )
 }

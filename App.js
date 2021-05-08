@@ -7,6 +7,8 @@ import { Navigation } from './src/infrastructure/navigation'
 import { theme } from './src/infrastructure/theme'
 import { AuthenticationContextProvider } from './src/services/authentication/authentication.context'
 import { RealEstateContextProvider } from './src/services/realestate/properties.context';
+import { initRegions } from './src/services/realestate/properties.service'
+
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -22,6 +24,15 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
+
+initRegions()
+  .then(() => {
+    console.log(('initialized db'))
+  })
+  .catch(err => {
+    console.log('Initializing failed.')
+    console.log(err)
+  })
 
 export default function App() {
   return (
