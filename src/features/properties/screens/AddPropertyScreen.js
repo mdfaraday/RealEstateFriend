@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { View, Text, SafeAreaView, ScrollView, Image, KeyboardAvoidingView } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, Image, KeyboardAvoidingView, keyboard } from 'react-native'
 import { TextInput, Button } from 'react-native-paper'
 import styled from 'styled-components/native'
 import * as ImagePicker from 'expo-image-picker'
@@ -120,7 +120,7 @@ export const AddPropertyScreen = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper>
-        <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={0} >
+        <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={0} onPress={() => keyboard.dismiss()}>
             <ScrollView>
         
                 <Title>Add a property</Title>

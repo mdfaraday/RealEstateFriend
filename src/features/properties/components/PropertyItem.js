@@ -34,11 +34,11 @@ const PropertyLabel = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
 `
 
-export const PropertyItem = ({ propertyInfo, navigation, currentRegion }) => {
-    console.log(currentRegion + ' propertyItem')
+export const PropertyItem = ({ propertyInfo, navigation, currentRegion, workOrderInfo }) => {
+    //console.log(workOrderInfo)
     const goToDetailScreen = () => {
         navigation.navigate( 'Detail', {
-            propertyInfo, currentRegion
+            propertyInfo, currentRegion, workOrderInfo
         })
     }
 

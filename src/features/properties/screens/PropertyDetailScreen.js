@@ -9,7 +9,6 @@ import RBSheet from "react-native-raw-bottom-sheet"
 
 import { RealEstateContext } from '../../../services/realestate/properties.context'
 import { theme } from '../../../infrastructure/theme'
-import { NavigationContext } from 'react-navigation'
 
 const ScreenWrapper = styled(SafeAreaView)`
     flex: 1
@@ -76,7 +75,7 @@ const InfoText = styled.Text`
     font-size: ${props => props.theme.fontSizes.small}
     padding: 5px
 `
-const DescriptionCard = styled.View`
+const DetailCard = styled.View`
     width: 95%
     background-color: white
     margin-top: 10px
@@ -102,11 +101,75 @@ const SheetListItemTitle = styled.Text`
     font-size: ${props => props.theme.fontSizes.large}
     padding-left: 40px
 `
+const WOTitle = styled.Text`
+    font-size: ${props => props.theme.fontSizes.xLarge}
+    margin: 20px
+`
+const SpacerLine = styled.View`
+    background-color: black
+    height: 3px
+    width: 80%
+    margin-top: 20px
+    margin-bottom: 10px
+`
+const WOidWrapper = styled.View`
+    align-items: flex-start
+`
+const IdText = styled.Text`
+    font-size: ${props => props.theme.fontSizes.large}
+`
+const CategoryWrapper = styled.View`
+    flex-direction: row
+    justify-content: space-between
+    width: 100%
+    margin-top: 10px
+    margin-bottom: 10px
+`
+const CategoryText = styled.Text`
+    font-size: ${props => props.theme.fontSizes.medium}
+`
+const WONotesWrapper = styled.View`
+    width: 100%
+    border-width: 0.5px
+    align-self: center
+    margin: 10px
+    padding: 5px
+    minHeight: 50px
+`
+const NotesText = styled.Text`
+    font-size: ${props => props.theme.fontSizes.small}
+`
+const WOImageWrapper = styled.View`
+    width: 100%
+    border-width: 0.5px
+    align-self: center
+    margin: 10px
+`
+const ThirdPartyWrapper = styled.View`
+    width: 100%
+    border-width: 0.5px
+    align-self: center
+    margin: 10px
+    padding: 5px
+`
+const ThirdPartyText = styled.Text`
+    font-size: ${props => props.theme.fontSizes.small}
+`
+const BottomRowWrapper = styled.View`
+    flex-direction: row
+    justify-content: space-between
+    width: 100%
+    margin-top: 10px
+`
+const DeleteButton = styled(TouchableOpacity)``
+const TotalCostText = styled.Text`
+    font-size: ${props => props.theme.fontSizes.medium}
+`
 
 //this screen accessed from 'PropertyItem.js'
 export const PropertyDetailScreen = ({ navigation, route }) => {
-    const { propertyInfo, currentRegion } = route.params
-    const { deleteProperty } = useContext(RealEstateContext)
+    const { propertyInfo, currentRegion, workOrderInfo } = route.params
+    const { deleteProperty, deleteWorkOrder } = useContext(RealEstateContext)
     const refRBSheet = useRef()
 
     const deletePropertyHandler = () => {
@@ -115,7 +178,10 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
     }
     const addWorkOrderHandler = () => {
         refRBSheet.current.close()
-        navigation.navigate('AddWorkOrder')
+        navigation.navigate('AddWorkOrder', {propertyName: propertyInfo.propertyName})
+    }
+    const deleteWorkOrderHandler = (WOid) => {
+        deleteWorkOrder(propertyInfo.propertyName, WOid)
     }
 
     return (
@@ -162,9 +228,45 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                         </SecondColumn>
                     </InfoCard>
                         
-                    <DescriptionCard>
+                    <DetailCard>
                         <DescriptionText>{propertyInfo.description}</DescriptionText>
-                    </DescriptionCard>
+                    </DetailCard>
+                    {/* <WOTitle>Work Orders</WOTitle> */}
+                    <SpacerLine></SpacerLine>
+
+                    {workOrderInfo.length > 0
+                        ? workOrderInfo.map(wo => (
+                            <DetailCard>
+                                <WOidWrapper>
+                                    <IdText>{wo.id}</IdText>
+                                </WOidWrapper>
+                                <CategoryWrapper>
+                                    <CategoryText>Type: {wo.type}</CategoryText>
+                                    <CategoryText>Area: {wo.area}</CategoryText>
+                                </CategoryWrapper>
+                                <WONotesWrapper>
+                                    <NotesText>{wo.notes}</NotesText>
+                                </WONotesWrapper>
+                                {wo.imageUri !== ""
+                                    ? <WOImageWrapper>
+                                        <ImageComponent source={{ uri: wo.imageUri }} />
+                                    </WOImageWrapper>
+                                    : null }
+                                {wo.thirdPartyInfo !== ""
+                                    ? <ThirdPartyWrapper>
+                                        <ThirdPartyText>{wo.thirdPartyInfo}</ThirdPartyText>
+                                    </ThirdPartyWrapper>
+                                    : null }
+                                    <BottomRowWrapper>
+                                        <DeleteButton onPress={() => deleteWorkOrderHandler(wo.id)}>
+                                            <AntDesign name="delete" size={24} color="red" />
+                                        </DeleteButton>
+                                        <TotalCostText>Total cost: ${wo.totalCost}</TotalCostText>
+                                    </BottomRowWrapper>
+                            </DetailCard>
+                        ))
+                        : null
+                    }
 
             <RBSheet
                 ref={refRBSheet}

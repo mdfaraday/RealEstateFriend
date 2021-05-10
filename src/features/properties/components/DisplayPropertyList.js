@@ -4,7 +4,7 @@ import { FlatList } from 'react-native'
 import { PropertyItem } from './PropertyItem'
 
 export const DisplayPropertyList = ({ fullDataList, navigation, currentRegion }) => {
-    console.log(fullDataList)
+    //console.log(fullDataList)
     return (
         <FlatList 
             data={fullDataList}
@@ -13,9 +13,10 @@ export const DisplayPropertyList = ({ fullDataList, navigation, currentRegion })
             renderItem={({ item }) => {
                 return (
                     <PropertyItem 
-                        propertyInfo={item}
+                        propertyInfo={item.propertyInfo}
                         navigation={navigation}
                         currentRegion={currentRegion}
+                        workOrderInfo={item.workOrders}
                     />
                 )
             }}

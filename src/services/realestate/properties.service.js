@@ -107,7 +107,7 @@ export const removeRegionStep2 = (name) => {
 //it would be good to add a transform function that takes care of adding all of the underscores, also one for removing the underscoring when loading.
 //adding properties to regions. Takes region name and adds an entry for the property to that table.
 export const createProperty = (propertyState) => {
-    console.log(propertyState)
+    //console.log(propertyState)
     const newRegionName = propertyState.regionName.trim().replace(/\s/g, '_')
     const newName = propertyState.propertyName.trim().replace(/\s/g, '_')
     const newDescription = propertyState.description.trim().replace(/\s/g, '_')
@@ -127,6 +127,27 @@ export const createProperty = (propertyState) => {
             (_, err) => {
                 reject(err)
                 console.log('Didnt work create property')
+            }
+            )
+        })
+    })
+    return promise
+}
+
+export const createPropertyStep2 = (propertyState) => {
+    const newPropertyName = propertyState.propertyName.trim().replace(/\s/g, '_')
+
+    const promise = new Promise((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql(`CREATE TABLE IF NOT EXISTS ${newPropertyName} (id INTEGER PRIMARY KEY, type TEXT, area TEXT, notes TEXT, totalCost TEXT, imageUri TEXT, thirdPartyInfo TEXT);`,
+            [],
+            (_, result) => {
+                console.log('createPropertyStep2 success')
+                resolve(result)
+            },
+            (_, err) => {
+                reject(err)
+                console.log('Didnt work createPropertyStep2')
             }
             )
         })
@@ -156,6 +177,55 @@ export const removeProperty = (regionName, name) => {
     return promise
 }
 
+//creates a work order under the propertyName. Need to make the fetching method for work orders as well.
+export const createWorkOrder = (workOrder) => {
+    console.log(workOrder)
+    const newPropertyName = workOrder.propertyName.trim().replace(/\s/g, '_')
+    const newType = workOrder.type.trim().replace(/\s/g, '_')
+    const newArea = workOrder.area.trim().replace(/\s/g, '_')
+    const newNotes = workOrder.notes.trim().replace(/\s/g, '_')
+    const newThirdPartyInfo = workOrder.thirdPartyInfo.trim().replace(/\s/g, '_')
+
+    const promise = new Promise((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql(`INSERT INTO ${newPropertyName} (type, area, notes, totalCost, imageUri, thirdPartyInfo) VALUES (?, ?, ?, ?, ?, ?);`,
+            [newType, newArea, newNotes, workOrder.totalCost, workOrder.imageUri, newThirdPartyInfo],
+            (_, result) => {
+                console.log('createWorkOrder success')
+                resolve(result)
+            },
+            (_, err) => {
+                reject(err)
+                console.log('Didnt work createWorkOrder')
+            }
+            )
+        })
+    })
+    return promise
+}
+
+export const removeWorkOrder = (propertyName, workOrderId) => {
+    //const newWorkOrderId = workOrderId.trim().replace(/\s/g, '_')
+    console.log(workOrderId)
+    const newPropertyName = propertyName.trim().replace(/\s/g, '_')
+    const promise = new Promise((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql(`DELETE FROM ${newPropertyName} WHERE id = ?;`,
+            [workOrderId],
+            (_, result) => {
+                console.log('removeWorkOrder success')
+                resolve(result)
+            },
+            (_, err) => {
+                reject(err)
+                console.log('Didnt work removeWorkOrder')
+            }
+            )
+        })
+    })
+    return promise
+}
+
 //initial load of data from master list of regions.
 export const fetchAllData = () => {
     const promise = new Promise((resolve, reject) => {
@@ -175,7 +245,7 @@ export const fetchAllData = () => {
     return promise
 }
 //initial load of data of specific tables that have already been created and pulled from the master list of regions.
-export const fetchTableByName = (tableName) => {
+export const fetchTableByRegionName = (tableName) => {
     const newString = tableName.trim().replace(/\s/g, '_')
     const promise = new Promise((resolve, reject) => {
         db.transaction(tx => {
@@ -183,6 +253,26 @@ export const fetchTableByName = (tableName) => {
             [],
             (_, result) => {
                 //console.log(result)
+                resolve(result)
+            },
+            (_, err) => {
+                reject(err)
+            }
+            )
+        })
+    })
+    return promise
+}
+
+export const fetchTableByPropertyName = (propertyName) => {
+    console.log(propertyName)
+    const newString = propertyName.trim().replace(/\s/g, '_')
+    const promise = new Promise((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql(`SELECT * FROM ${newString}`,                             //there are currently NO PROPERTIES in these created tables.
+            [],
+            (_, result) => {
+                console.log('fetched work orders')
                 resolve(result)
             },
             (_, err) => {

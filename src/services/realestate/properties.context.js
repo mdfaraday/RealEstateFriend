@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from 'react'
-import { fetchAllData, createRegion, createRegionStep2, fetchTableByName, removeRegion, removeRegionStep2, 
-    resetAllData, removeSpecificRegionsWithThis, createProperty, removeProperty } from './properties.service'
+import { fetchAllData, createRegion, createRegionStep2, fetchTableByRegionName, fetchTableByPropertyName, removeRegion, removeRegionStep2, 
+    resetAllData, removeSpecificRegionsWithThis, createProperty, createPropertyStep2, removeProperty, createWorkOrder, removeWorkOrder } from './properties.service'
 import Region from '../../models/region'
 
 export const RealEstateContext = createContext()
@@ -56,9 +56,15 @@ export const RealEstateContextProvider = ({ children }) => {
             throw e
         }
         try {
-            await loadProperties()
+            await createPropertyStep2(propertyState)
         } catch (e) {
             console.log('addProperty error 2')
+            throw e
+        }
+        try {
+            await loadProperties()
+        } catch (e) {
+            console.log('addProperty error 3')
             throw e
         }
     }
@@ -78,6 +84,36 @@ export const RealEstateContextProvider = ({ children }) => {
         }
     }
 
+    const addWorkOrder = async (workOrder) => {
+        try {
+            await createWorkOrder(workOrder)
+        } catch (e) {
+            console.log('createWorkOrder error 1')
+            throw e
+        }
+        try {
+            await loadProperties()
+        } catch (e) {
+            console.log('createWorkOrder error 2')
+            throw e
+        }
+    }
+
+    const deleteWorkOrder = async (propertyName, workOrderName) => {
+        try {
+            await removeWorkOrder(propertyName, workOrderName)
+        } catch (e) {
+            console.log('deleteWorkOrder error 1')
+            throw e
+        }
+        try {
+            await loadProperties()
+        } catch (e) {
+            console.log('deleteWorkOrder error 2')
+            throw e
+        }
+    }
+
     const loadProperties = async () => {
         try {
             const dbResult = await fetchAllData()
@@ -85,16 +121,26 @@ export const RealEstateContextProvider = ({ children }) => {
             let newArray = []
             if (dbResult.rows._array.length > 0) {
                 for (let i=0;i<dbResult.rows._array.length;i++) {
-                    const info = await fetchTableByName(dbResult.rows._array[i].regionName) //returns an array of the properties for [i] region.
+                    const info = await fetchTableByRegionName(dbResult.rows._array[i].regionName) //returns an array of the properties for [i] region.
                     if (info.rows.length === 0) { //have to instead create a new region if no properties are under the region due to the way SQLite saves data (ie the array is left empty).
                         const newName = dbResult.rows._array[i].regionName.replace(/_/g, ' ')
                         newArray.push(new Region(newName, [])) //if no properties added yet.
                     } else {
                         //console.log('fetchingTableByName')
                         //console.log(dbResult.rows._array[i].regionName)
-                        const newData = await fetchTableByName(dbResult.rows._array[i].regionName)
-                        console.log(newData)
-                        newArray.push({regionName: dbResult.rows._array[i].regionName, properties: newData.rows._array}) //if properties have been added.
+                        const newData = await fetchTableByRegionName(dbResult.rows._array[i].regionName)
+                        //console.log(newData)
+                        for (let j=0;j<dbResult.rows._array.length;j++) {
+                            //console.log('inside for loop')
+                            const newPropertyWorkOrders = await fetchTableByPropertyName(newData.rows._array[i].propertyName)
+                            if (newPropertyWorkOrders.rows._array.length > 0) {
+                                console.log('if success')
+                                newArray.push({regionName: dbResult.rows._array[i].regionName, properties: [{propertyInfo: newData.rows._array[j], workOrders: newPropertyWorkOrders.rows._array}] }) //if WOs have been added.
+                            } else {
+                                console.log('if failure')
+                                newArray.push({regionName: dbResult.rows._array[i].regionName, properties: [{propertyInfo: newData.rows._array[j], workOrders: []}] })
+                            }
+                        }
 
                     }
                 }
@@ -125,7 +171,9 @@ export const RealEstateContextProvider = ({ children }) => {
                 addProperty,
                 deleteProperty,
                 hardDataReset,
-                tempDeleteSpecificRegions
+                tempDeleteSpecificRegions,
+                addWorkOrder, 
+                deleteWorkOrder
             }}
         >
             {children}

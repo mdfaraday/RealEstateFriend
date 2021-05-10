@@ -41,7 +41,7 @@ export const RegionCard = ({ regionTitle, deleteRegionByName, regionSelected, fu
     const selectRegion = () => {
         choseRegion()
         setSelected(regionTitle) //sets up getting the border around the selected region.
-        console.log(regionTitle + ' regionTitle')
+        //console.log(regionTitle + ' regionTitle')
     }
 
     return (
