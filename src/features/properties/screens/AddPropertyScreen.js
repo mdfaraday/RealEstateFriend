@@ -164,7 +164,7 @@ export const AddPropertyScreen = ({ navigation, route }) => {
                             underlineColor='green'
                         />
                         <StyledInput 
-                            label='Monthly cost'
+                            label='Mortgage cost'
                             value={propertyState.mortgageCost}
                             keyboardType='numeric'
                             onChange={event => setPropertyState(prevState =>  ({...prevState, mortgageCost: event.nativeEvent.text}) )}

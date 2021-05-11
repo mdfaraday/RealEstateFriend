@@ -2,7 +2,7 @@ import styled from 'styled-components/native'
 import { FAB } from 'react-native-paper'
 import { SafeAreaView } from 'react-native'
 
-export const ScreenWrapper = styled.View`
+export const ScreenWrapper = styled(SafeAreaView)`
     flex: 1
 `
 
@@ -41,6 +41,7 @@ export const SheetListItem = styled.TouchableOpacity`
 export const SheetListItemTitle = styled.Text`
     font-size: ${props => props.theme.fontSizes.large}
     padding-left: 40px
+    font-family: roboto-regular
 `
 
 //containers for region and property lists.

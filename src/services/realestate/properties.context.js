@@ -99,9 +99,9 @@ export const RealEstateContextProvider = ({ children }) => {
         }
     }
 
-    const deleteWorkOrder = async (propertyName, workOrderName) => {
+    const deleteWorkOrder = async (propertyName, workOrderId) => {
         try {
-            await removeWorkOrder(propertyName, workOrderName)
+            await removeWorkOrder(propertyName, workOrderId)
         } catch (e) {
             console.log('deleteWorkOrder error 1')
             throw e
@@ -134,10 +134,8 @@ export const RealEstateContextProvider = ({ children }) => {
                             //console.log('inside for loop')
                             const newPropertyWorkOrders = await fetchTableByPropertyName(newData.rows._array[i].propertyName)
                             if (newPropertyWorkOrders.rows._array.length > 0) {
-                                console.log('if success')
                                 newArray.push({regionName: dbResult.rows._array[i].regionName, properties: [{propertyInfo: newData.rows._array[j], workOrders: newPropertyWorkOrders.rows._array}] }) //if WOs have been added.
                             } else {
-                                console.log('if failure')
                                 newArray.push({regionName: dbResult.rows._array[i].regionName, properties: [{propertyInfo: newData.rows._array[j], workOrders: []}] })
                             }
                         }

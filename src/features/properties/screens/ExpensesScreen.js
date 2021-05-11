@@ -23,7 +23,7 @@ const HeadingTextWrapper = styled.View`
 const ButtonComponent = styled(Button).attrs({
     color: theme.colors.ui.secondary
 })`
-    width: 45%
+    width: 45%s
 `
 const SelectView = styled.View`
     margin: 10px
@@ -32,6 +32,7 @@ const SelectView = styled.View`
 const ExpenseText = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
     padding: 5px
+    font-family: roboto-regular
 `
 const CustomCard = styled(Card)`
     width: 90%
@@ -62,6 +63,7 @@ export const NoPropertiesTextWrapper = styled.View`
 export const NoPropertiesText = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
     padding: 5px
+    font-family: roboto-regular
 `
 
 
@@ -83,13 +85,14 @@ export const ExpensesScreen = ({ navigation }) => {
 
     useEffect(() => {
         calculateNumbers()
-        console.log('useEffect')
+        //console.log('useEffect')
     }, [propertiesData, selectedIndex, toggleExpensesByRegion])
+
     const calculateNumbers = () => {
         let tempTotalIncome = 0
         let tempTotalExpenses = 0
         if (toggleExpensesByRegion && propertiesData[selectedIndex.row]) {
-            console.log('working')
+            //console.log('working')
             if (propertiesData[selectedIndex.row].properties.length > 0) {
                 for (let i=0;i<propertiesData[selectedIndex.row].properties.length;i++) {
                     console.log('working 2')
@@ -100,7 +103,7 @@ export const ExpensesScreen = ({ navigation }) => {
                 }
             }
         } else {
-            console.log('total section')
+            //console.log('total section')
             for (let i=0;i<propertiesData.length;i++) {
                 for (let j=0;j<propertiesData[i].properties.length;j++) {
                     tempTotalIncome += parseInt(propertiesData[i].properties[j].monthlyRent)
@@ -110,7 +113,7 @@ export const ExpensesScreen = ({ navigation }) => {
                 }
             }
         }
-        console.log(tempTotalIncome)
+        //console.log(tempTotalIncome)
         setTotalIncome(tempTotalIncome)
         setTotalExpenses(tempTotalExpenses)
         setTotalCashFlow(tempTotalIncome - tempTotalExpenses)
@@ -139,12 +142,12 @@ export const ExpensesScreen = ({ navigation }) => {
                 {toggleExpensesByRegion 
                 ? <SelectView>
                     <Select
-                        value={propertiesData[selectedIndex.row].regionName}
+                        value={propertiesData[selectedIndex.row].regionName.replace(/_/g, " ")}
                         selectedIndex={selectedIndex}
                         onSelect={index => setSelectedIndex(index)}
                         size='large'
                     >
-                        {propertiesData.map((region, i) => <SelectItem title={<Text>{region.regionName}</Text>} key={i}/> )}
+                        {propertiesData.map((region, i) => <SelectItem title={<Text>{region.regionName.replace(/_/g, " ")}</Text>} key={i}/> )}
                     </Select>
                 </SelectView>
                 : null }

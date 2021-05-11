@@ -157,11 +157,12 @@ export const createPropertyStep2 = (propertyState) => {
 
 //for deleting properties. Takes place from the PropertyDetailScreen.
 export const removeProperty = (regionName, name) => {
+    console.log(name)
     const newRegionName = regionName.trim().replace(/\s/g, '_')
     const newName = name.trim().replace(/\s/g, '_')
     const promise = new Promise((resolve, reject) => {
         db.transaction(tx => {
-            tx.executeSql(`DELETE FROM ${newRegionName} WHERE name = ?;`,
+            tx.executeSql(`DELETE FROM ${newRegionName} WHERE propertyName = ?;`,
             [newName],
             (_, result) => {
                 console.log('removeProperty success')
@@ -265,7 +266,6 @@ export const fetchTableByRegionName = (tableName) => {
 }
 
 export const fetchTableByPropertyName = (propertyName) => {
-    console.log(propertyName)
     const newString = propertyName.trim().replace(/\s/g, '_')
     const promise = new Promise((resolve, reject) => {
         db.transaction(tx => {

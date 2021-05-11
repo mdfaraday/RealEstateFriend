@@ -3,10 +3,12 @@ import { Text, View, TouchableOpacity,  } from 'react-native'
 import {  } from 'react-native-paper'
 import styled from 'styled-components/native'
 import { Feather } from '@expo/vector-icons'
+import { theme } from '../../../infrastructure/theme'
 
 const Title = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
-    color: white
+    font-family: roboto-medium
+    padding: 3px
 `
 const IconContainer = styled(TouchableOpacity)`
     position: absolute
@@ -30,12 +32,15 @@ export const RegionCard = ({ regionTitle, deleteRegionByName, regionSelected, fu
     const RegionBlock = styled(TouchableOpacity)`
     height: 120px
     width: 120px
-    background-color: ${props => props.theme.colors.ui.secondary}
+    background-color: white
     border-radius: 20px
-    border: ${regionTitle === selected ? '5px solid green' : '0 solid white' }
+    border: ${regionTitle === selected ? '5px solid green' : '0.5px solid gray' }
     margin: 10px
     justify-content: center
     align-items: center
+    shadow-color: gray
+    shadow-radius: 5px
+    box-shadow: 2px 2px 2px
     `
 
     const selectRegion = () => {
@@ -47,7 +52,7 @@ export const RegionCard = ({ regionTitle, deleteRegionByName, regionSelected, fu
     return (
         <RegionBlock onPress={selectRegion}>
             <IconContainer onPress={() => deleteRegionByName(transformedName)}>
-                <Feather name="x-circle" size={24} color="white" />
+                <Feather name="x-circle" size={24} color='red' />
             </IconContainer>
             <Title>{transformedName}</Title>
         </RegionBlock>

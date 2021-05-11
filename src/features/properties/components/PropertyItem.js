@@ -32,10 +32,13 @@ const PropertyLabel = styled.Text`
     color: white
     bottom: 20px
     font-size: ${props => props.theme.fontSizes.medium}
+    padding: 10px
+    font-family: roboto-medium
 `
 
 export const PropertyItem = ({ propertyInfo, navigation, currentRegion, workOrderInfo }) => {
     //console.log(workOrderInfo)
+    const name = propertyInfo.propertyName.replace(/_/g, " ")
     const goToDetailScreen = () => {
         navigation.navigate( 'Detail', {
             propertyInfo, currentRegion, workOrderInfo
@@ -47,7 +50,7 @@ export const PropertyItem = ({ propertyInfo, navigation, currentRegion, workOrde
             <PropertyCard  onPress={goToDetailScreen} >
                 <ImageContainer>
                     <CardBackgroundImage source={{ uri: propertyInfo.imageUri }} />
-                    <PropertyLabel>{propertyInfo.propertyName}</PropertyLabel>
+                    <PropertyLabel>{name}</PropertyLabel>
                 </ImageContainer>
                 
             </PropertyCard>

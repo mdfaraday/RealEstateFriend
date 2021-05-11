@@ -24,6 +24,7 @@ const HeadingTextWrapper = styled.View`
 `
 const Heading = styled.Text`
     font-size: ${props => props.theme.fontSizes.xLarge}
+    font-family: roboto-medium
 `
 
 const BackButton = styled(TouchableOpacity)`
@@ -60,6 +61,7 @@ const CustomCard = styled.View`
 `
 const MediumText = styled.Text`
     font-size: ${props => props.theme.fontSizes.large}
+    font-family: roboto-regular
 `
 const TotalCostInput = styled(TextInput).attrs({
     theme: {colors: {primary: theme.colors.ui.primary}}

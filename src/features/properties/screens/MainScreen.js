@@ -27,7 +27,7 @@ export const MainScreen = ({ navigation }) => {
         initialLoad()
         //hardDataReset()
     }, [selectedRegion])
-    console.log(propertiesData)
+    //console.log(propertiesData)
     const initialLoad = async () => {
         await loadProperties()
     }

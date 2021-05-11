@@ -23,11 +23,13 @@ const HeadingTextWrapper = styled.View`
 `
 const Heading = styled.Text`
     font-size: ${props => props.theme.fontSizes.large}
+    font-family: roboto-regular
 `
 const HeadingSubtitle = styled.Text`
-    font-size: ${props => props.theme.fontSizes.extraSmall}
+    font-size: ${props => props.theme.fontSizes.small}
     color: gray
     align-self: center
+    font-family: roboto-light
 `
 const BackButton = styled(TouchableOpacity)`
     padding-left: 5px
@@ -44,6 +46,7 @@ const InfoOverlayContainer = styled.View`
 `
 const PropertyOverlayInfo = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
+    font-family: roboto-medium
     padding: 3px
 `
 const MainBody = styled.View`
@@ -73,12 +76,14 @@ const FirstColumn = styled.View``
 const SecondColumn = styled.View``
 const InfoText = styled.Text`
     font-size: ${props => props.theme.fontSizes.small}
+    font-family: roboto-regular
     padding: 5px
 `
 const DetailCard = styled.View`
     width: 95%
     background-color: white
     margin-top: 10px
+    margin-bottom: 10px
     padding: 10px
     shadow-radius: 5px
     box-shadow: 2px 2px 2px
@@ -87,6 +92,7 @@ const DetailCard = styled.View`
 `
 const DescriptionText = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
+    font-family: roboto-regular
 `
 
 const SheetListItem = styled.TouchableOpacity`
@@ -117,6 +123,7 @@ const WOidWrapper = styled.View`
 `
 const IdText = styled.Text`
     font-size: ${props => props.theme.fontSizes.large}
+    font-family: roboto-bold
 `
 const CategoryWrapper = styled.View`
     flex-direction: row
@@ -127,6 +134,11 @@ const CategoryWrapper = styled.View`
 `
 const CategoryText = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
+    font-family: roboto-regular
+`
+const CategoryText2 = styled.Text`
+    font-size: ${props => props.theme.fontSizes.medium}
+    font-family: roboto-medium
 `
 const WONotesWrapper = styled.View`
     width: 100%
@@ -138,9 +150,11 @@ const WONotesWrapper = styled.View`
 `
 const NotesText = styled.Text`
     font-size: ${props => props.theme.fontSizes.small}
+    font-family: roboto-regular
 `
 const WOImageWrapper = styled.View`
     width: 100%
+    height: 200px
     border-width: 0.5px
     align-self: center
     margin: 10px
@@ -154,6 +168,7 @@ const ThirdPartyWrapper = styled.View`
 `
 const ThirdPartyText = styled.Text`
     font-size: ${props => props.theme.fontSizes.small}
+    font-family: roboto-regular
 `
 const BottomRowWrapper = styled.View`
     flex-direction: row
@@ -164,6 +179,7 @@ const BottomRowWrapper = styled.View`
 const DeleteButton = styled(TouchableOpacity)``
 const TotalCostText = styled.Text`
     font-size: ${props => props.theme.fontSizes.medium}
+    font-family: roboto-medium
 `
 
 //this screen accessed from 'PropertyItem.js'
@@ -172,8 +188,13 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
     const { deleteProperty, deleteWorkOrder } = useContext(RealEstateContext)
     const refRBSheet = useRef()
 
+    const transformedPropertyName = propertyInfo.propertyName.replace(/_/g, " ")
+    const transformedRegion = currentRegion.replace(/_/g, " ")
+    const transformedAddress = propertyInfo.address.replace(/_/g, " ")
+    const transformedDescription = propertyInfo.description.replace(/_/g, " ")
+
     const deletePropertyHandler = () => {
-        deleteProperty(propertyInfo.regionName, propertyInfo.propertyName)
+        deleteProperty(currentRegion, propertyInfo.propertyName)
         navigation.navigate('Main')
     }
     const addWorkOrderHandler = () => {
@@ -191,8 +212,8 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                     <Entypo name="chevron-left" size={40} color="black" />
                 </BackButton>
                 <HeadingTextWrapper>
-                    <Heading>{propertyInfo.propertyName}</Heading>
-                    <HeadingSubtitle>{currentRegion}</HeadingSubtitle>
+                    <Heading>{transformedPropertyName}</Heading>
+                    <HeadingSubtitle>{transformedRegion}</HeadingSubtitle>
                 </HeadingTextWrapper>
                 <MenuButton onPress={() => refRBSheet.current.open()}>
                     <Ionicons name='menu' size={40} color='black' />
@@ -205,14 +226,14 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                         <ImageComponent source={{ uri: propertyInfo.imageUri }} />
                         <InfoOverlayContainer>
                             <PropertyOverlayInfo>{propertyInfo.bedrooms} Bed, {propertyInfo.bathrooms} Bath</PropertyOverlayInfo>
-                            <PropertyOverlayInfo>{propertyInfo.address}</PropertyOverlayInfo>
+                            <PropertyOverlayInfo>{transformedAddress}</PropertyOverlayInfo>
                         </InfoOverlayContainer>
                     </ImageContainer>
                     
                     <InfoCard>
                         <FirstColumn>
                             <InfoText>Purchase cost: ${propertyInfo.purchaseCost}</InfoText>
-                            <InfoText>Down Payment: {propertyInfo.downPayment}</InfoText>
+                            <InfoText>Down Payment: ${propertyInfo.downPayment}</InfoText>
                             <InfoText>Rehab cost: ${propertyInfo.rehabCost}</InfoText>
                             <InfoText>Mortgage cost: ${propertyInfo.monthlyCost}</InfoText>
                             <InfoText>Maint cost: ${propertyInfo.maintCost}</InfoText>
@@ -220,7 +241,7 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                         </FirstColumn>
                         <SecondColumn>
                             <InfoText>Monthly rent: ${propertyInfo.monthlyRent}</InfoText>
-                            <InfoText>Debt Remaining: {propertyInfo.debtRemaining}</InfoText>
+                            <InfoText>Debt Remaining: ${propertyInfo.debtRemaining}</InfoText>
                             <InfoText>Reserve Amt: ${propertyInfo.reserveAmt}</InfoText>
                             <InfoText>Sqft: {propertyInfo.sqft}</InfoText>
                             <InfoText>Acres: {propertyInfo.acres}</InfoText>
@@ -229,23 +250,23 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                     </InfoCard>
                         
                     <DetailCard>
-                        <DescriptionText>{propertyInfo.description}</DescriptionText>
+                        <DescriptionText>{transformedDescription}</DescriptionText>
                     </DetailCard>
                     {/* <WOTitle>Work Orders</WOTitle> */}
                     <SpacerLine></SpacerLine>
 
                     {workOrderInfo.length > 0
                         ? workOrderInfo.map(wo => (
-                            <DetailCard>
+                            <DetailCard key={wo.id}>
                                 <WOidWrapper>
                                     <IdText>{wo.id}</IdText>
                                 </WOidWrapper>
                                 <CategoryWrapper>
-                                    <CategoryText>Type: {wo.type}</CategoryText>
-                                    <CategoryText>Area: {wo.area}</CategoryText>
+                                    <CategoryText>Type: <CategoryText2>{wo.type.replace(/_/g, " ")}</CategoryText2></CategoryText>
+                                    <CategoryText>Area: <CategoryText2>{wo.area.replace(/_/g, " ")}</CategoryText2></CategoryText>
                                 </CategoryWrapper>
                                 <WONotesWrapper>
-                                    <NotesText>{wo.notes}</NotesText>
+                                    <NotesText>{wo.notes.replace(/_/g, " ")}</NotesText>
                                 </WONotesWrapper>
                                 {wo.imageUri !== ""
                                     ? <WOImageWrapper>
@@ -254,7 +275,7 @@ export const PropertyDetailScreen = ({ navigation, route }) => {
                                     : null }
                                 {wo.thirdPartyInfo !== ""
                                     ? <ThirdPartyWrapper>
-                                        <ThirdPartyText>{wo.thirdPartyInfo}</ThirdPartyText>
+                                        <ThirdPartyText>{wo.thirdPartyInfo.replace(/_/g, " ")}</ThirdPartyText>
                                     </ThirdPartyWrapper>
                                     : null }
                                     <BottomRowWrapper>
