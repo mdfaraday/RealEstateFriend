@@ -65,8 +65,9 @@ const SecondColumn = styled.View`
 `
 
 export const AddPropertyScreen = ({ navigation, route }) => {
+    const { region } = route.params
     const [propertyState, setPropertyState] = useState({
-        regionName: '',
+        regionName: region,
         propertyName: '',
         imageUri: '',
         description: '',
@@ -84,11 +85,10 @@ export const AddPropertyScreen = ({ navigation, route }) => {
         debtRemaining: '',
         downPayment: ''
     })
-    const { region } = route.params
     const { addProperty } = useContext(RealEstateContext)
 
     useEffect(() => {
-        setPropertyState(prevState => ({...prevState, regionName: region}))
+        //setPropertyState(prevState => ({...prevState, regionName: region}))
     }, [])
 
     const verifyPermissions = async () => {

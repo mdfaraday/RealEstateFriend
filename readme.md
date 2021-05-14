@@ -23,6 +23,4 @@ Keep track of different properties owned/rental and repairs needed, expenses bei
 
 - List.Accordian (react native paper)
 
-### Current Issues
-
-- Fix reloading/lifecycle method issues on MainScreen.
+##### Notes

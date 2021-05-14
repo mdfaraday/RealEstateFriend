@@ -107,7 +107,7 @@ export const removeRegionStep2 = (name) => {
 //it would be good to add a transform function that takes care of adding all of the underscores, also one for removing the underscoring when loading.
 //adding properties to regions. Takes region name and adds an entry for the property to that table.
 export const createProperty = (propertyState) => {
-    //console.log(propertyState)
+    console.log(propertyState)
     const newRegionName = propertyState.regionName.trim().replace(/\s/g, '_')
     const newName = propertyState.propertyName.trim().replace(/\s/g, '_')
     const newDescription = propertyState.description.trim().replace(/\s/g, '_')

@@ -53,6 +53,7 @@ export const MainScreen = ({ navigation }) => {
     }
     //from RegionCard under components
     const regionSelectedHandler = (currentRegionSelected, index) => {
+        console.log(currentRegionSelected + ' regionSelectedHandler')
         setIndexOfRegion(index)
         setSelectedRegion(currentRegionSelected)
     }

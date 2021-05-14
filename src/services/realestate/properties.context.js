@@ -52,7 +52,7 @@ export const RealEstateContextProvider = ({ children }) => {
         try {
             await createProperty(propertyState)
         } catch (e) {
-            console.log('addProperty error')
+            console.log('addProperty error 1')
             throw e
         }
         try {
